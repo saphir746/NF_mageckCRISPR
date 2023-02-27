@@ -24,49 +24,6 @@ filter_bam_script = Channel.fromPath("scripts/filter_bam.cpp")
 include { BAM_ALIGN_COUNT } from './workflows/align_bams.nf'
 include { mageck_count_fastq; mageck_test; mageck_mle } from './modules/mageck.nf'
 
-///////////////////////////////////////////////////////////////////////////////
-//// SAMPLES //////////////////////////////////////////////////////////////////
-
-Channel
-	.fromPath(params.Samplesheet)
-	.splitCsv(header: true)
-	.map{
-                it << [
-                        "fastqs": sprintf("%s %s",
-                                it["fastq_1"], it["fastq_2"])
-                ]
-        }
-	.set{ SAMPLES }
-
-///////////////////////////////////////////////////////////////////////////////
-//// POOLS ////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-Channel
-	.fromPath("input/sgRNA_lib/*_library.csv")
-	.map{[
-		it.toString().replaceAll("(.*)/sgRNA_lib/(.*)_library.csv", "\$2"),
-		it
-	]}
-	.set{ POOL }
-
-
-///////////////////////////////////////////////////////////////////////////////
-//// DESIGN MATRICES //////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-
-Channel
-        .fromPath("input/design_mats/design_*.txt")
-        .map{[
-                'Brie',
-		it.toString().replaceAll("(.*)/design_mats/design_(.*).txt", "\$2"),
-                it
-        ]}
-        .set{ Design }
-
-
-///////////////////////////////////////////////////////////////////////////////
 //// PROCESSES ////////////////////////////////////////////////////////////////
 
 publish_mode = "symlink"
@@ -189,8 +146,37 @@ def listSpread(item) {
 //// MAIN WORKFLOW ////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//
 workflow {
+
+	Channel
+        	.fromPath(params.Samplesheet)
+        	.splitCsv(header: true)
+        	.map{
+                it << [
+                        "fastqs": sprintf("%s %s",
+                                it["fastq_1"], it["fastq_2"])
+                	]}
+        	.set{ SAMPLES }
+
+	Channel
+        	.fromPath(params.PoolPath/"*_library.csv")
+        	.map{[
+                	it.toString().replaceAll("(.*)/sgRNA_lib/(.*)_library.csv", "\$2"),
+                	it
+        		]}
+        	.set{ POOL }
+
+
+	Channel
+        	.fromPath(params.designsMLE/"design_*.txt")
+        	.map{[
+                	'Brie',
+                	it.toString().replaceAll("(.*)/design_mats/design_(.*).txt", "\$2"),
+                	it
+        		]}
+        	.set{ Design }
+        
+	////////////////////////////////////////////////////////////////////////////
 	merge_fastq(SAMPLES)
 	unzip(merge_fastq.out)	
 	
