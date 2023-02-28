@@ -5,21 +5,13 @@ import java.nio.file.Paths
 nextflow.enable.dsl=2
 
 ///////////////////////////////////////////////////////////////////////////////
-//// Stolen from Nourdine Bah (nourdine.bah@crick.ac.uk) and modified   //////
+/////////////////// Heavily modified  ///////////////////////////////// //////
 /////////////////////////////////////////////////////////////////////////////
-
-MD_ANACONDA = "Anaconda2/2019.03"
-CONDA_ENV = '/camp/stp/babs/working/schneid/conda/envs/RegenieGWA'
-R_ENV = '/camp/stp/babs/working/software/anaconda/envs/R-3.6.1-rstudio-BABS'
-
-
-PY_DIR = Paths.get(workflow.projectDir.toString(),"scripts").toString()
-OUT_DIR = Paths.get( workflow.projectDir.toString() , "results", "counts" ).toString()
 
 ////////////////////////////////////////////////////////////////////////////////
 ////// SCRIPTS ////////////////////////////////////////////////////////////////
 
-filter_bam_script = Channel.fromPath("scripts/filter_bam.cpp")
+//filter_bam_script = Channel.fromPath("scripts/filter_bam.cpp")
 
 include { BAM_ALIGN_COUNT } from './workflows/align_bams.nf'
 include { mageck_count_fastq; mageck_test; mageck_mle } from './modules/mageck.nf'
@@ -81,7 +73,7 @@ process reformat_pool {
 
 	executor "local"
 
-	container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/sequencing/sequencing.sif"
+	container "docker://bahnk/sequencing:v2"
 
 	tag { pool }
 
@@ -159,7 +151,7 @@ workflow {
         	.set{ SAMPLES }
 
 	Channel
-        	.fromPath(params.PoolPath/"*_library.csv")
+        	.fromPath(Paths.get(params.PoolPath, "*_library.csv"))
         	.map{[
                 	it.toString().replaceAll("(.*)/sgRNA_lib/(.*)_library.csv", "\$2"),
                 	it
@@ -168,7 +160,7 @@ workflow {
 
 
 	Channel
-        	.fromPath(params.designsMLE/"design_*.txt")
+        	.fromPath(Paths.get(params.designsMLE, "design_*.txt"))
         	.map{[
                 	'Brie',
                 	it.toString().replaceAll("(.*)/design_mats/design_(.*).txt", "\$2"),
@@ -195,25 +187,32 @@ workflow {
 	
 	mageck_count_fastq(TO_COUNTS)
 
-        reformat_pool
-		.out
-		.control
-		.combine( count_fastq.out.counts , by: 0 )
-		.set{ MLE_INPUT }
-//        MLE_INPUT.view()
-
-        //////////////// ALIGN TRIM and BAM COUNT /////////////////////////////////
-	BAM_ALIGN_COUNT(reformat_pool.out,
-		        unzip.out)
-	/////////////////////////////////////////////////////////////////////////// 
-
-	Design
-		.combine( MLE_INPUT, by: 0 )
-		.set{ MLE_INPUT_2 }
-  
-//	MLE_INPUT_2.flatMap{ listSpread(it) }
-//		.set{ MLE_INPUT_3 }
-	
-	mageck_test(count_fastq.out.counts)
-	mageck_mle(MLE_INPUT_2)	
+//        reformat_pool
+//		.out
+//		.control
+//		.combine( count_fastq.out.counts , by: 0 )
+//		.set{ MLE_INPUT }
+////        MLE_INPUT.view()
+//
+//        //////////////// ALIGN TRIM and BAM COUNT /////////////////////////////////
+//	if( params.BAM_ALIGN )
+//		BAM_ALIGN_COUNT(reformat_pool.out,
+//			        unzip.out)
+//			.set{ MLE_INPUT }
+//        else
+//		mageck_count_fastq(TO_COUNTS)
+//
+//                reformat_pool
+//                	.out
+//                	.control
+//                	.combine( count_fastq.out.counts , by: 0 )
+//                	.set{ MLE_INPUT }
+//	/////////////////////////////////////////////////////////////////////////// 
+//
+//	Design
+//		.combine( MLE_INPUT, by: 0 )
+//		.set{ MLE_INPUT_2 }
+//	
+//	mageck_test(count_fastq.out.counts)
+//	mageck_mle(MLE_INPUT_2)	
 }

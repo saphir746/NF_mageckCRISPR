@@ -1,0 +1,7 @@
+
+genome_version: GRCm38
+genome_release: 86
+rsem_index: /camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-86/genome_idx/rsem/star/75bp/genome
+gtf: /camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-86/gtf/Mus_musculus.GRCm38.86.gtf
+fai: /camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-86/genome/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa
+

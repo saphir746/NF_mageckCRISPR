@@ -1,3 +1,7 @@
+import java.nio.file.Paths
+
+publish_mode = "symlink"
+publish_overwrite = true
 
 process mageck_count_fastq {
 
@@ -6,7 +10,7 @@ process mageck_count_fastq {
         time "1h"
         memory "5G"
 
-        container "docker://davidliwei/mageck-vispr:latest"
+        container "docker://davidliwei/mageck:latest"
 
         tag { pool }
 
@@ -17,7 +21,7 @@ process mageck_count_fastq {
         input:
                 tuple val(pool), path(library), val(samples), path(fastqs)
 
-        output:lign_bams.nf
+        output:
                 tuple val(pool), path("${pool}.count.txt"), emit: counts
                 tuple val(pool), path("${pool}.count_normalized.txt"), emit: norm_counts
                 tuple val(pool), path("${pool}.countsummary.txt"), emit: summary
@@ -41,7 +45,7 @@ process mageck_test {
         time "3h"
         memory "10G"
 
-        container "docker://davidliwei/mageck-vispr:latest"
+        container "docker://davidliwei/mageck:latest"
 
         tag { postfix }
 
@@ -75,7 +79,7 @@ process mageck_mle {
         time "3h"
         memory "10G"
 
-        container "docker://davidliwei/mageck-vispr:latest"
+        container "docker://davidliwei/mageck:latest"
 
         tag { postfix }
 

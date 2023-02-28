@@ -10,7 +10,7 @@ nextflow.enable.dsl=2
 process bowtie2_index {
 
         executor "local"
-        container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/sequencing/sequencing.sif"
+        container "docker://bahnk/sequencing:v2" 
 
         tag { pool }
 
@@ -37,7 +37,7 @@ process bowtie2_index {
 process trim {
 
         executor "slurm"
-        container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/sequencing/sequencing.sif"
+        container "docker://bahnk/sequencing:v2"
 
         cpus 6
         maxForks 3
@@ -72,7 +72,7 @@ process trim {
 process bowtie2 {
 
         executor "slurm"
-        container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/sequencing/sequencing.sif"
+        container "docker://bahnk/sequencing:v2"
         cpus 12
         time "01:00:00"
 
@@ -107,7 +107,7 @@ process bowtie2 {
 process filter_bam {
 
         executor "local"
-        container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/sequencing/sequencing.sif"
+        container "docker://bahnk/sequencing:v2"
 
         cpus 2
         time "01:00:00"
@@ -140,7 +140,7 @@ process count_bams {
         time "1h"
         memory "5G"
         //executor "local"
-        container "/camp/stp/babs/working/schneid/projects/tybulewiczv/edina.schweighoffer/CRISPR_screen_Mice_Bcells/input/assests/mageck/mageck.sif"
+        container "docker://bahnk/sequencing:v2"
 
         tag { pool }
 
