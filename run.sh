@@ -10,6 +10,7 @@ POOOOLPATH=${PROJECT_dir}"input/sgRNA_lib"
 DESIGNSPATH=${PROJECT_dir}"input/design_mats"
 
 export NXF_SINGULARITY_CACHEDIR=${PROJECT_dir}/images/cachedir/
+##
 
 nextflow run mageck_count.nf \
 			--Samplesheet ${SAMSHEET} \
