@@ -153,7 +153,7 @@ workflow {
 	Channel
         	.fromPath(Paths.get(params.PoolPath, "*_library.csv"))
         	.map{[
-                	it.toString().replaceAll("(.*)/sgRNA_lib/(.*)_library.csv", "\$2"),
+                	it.toString().replaceAll("(.*)/([a-zA-Z0-9_]+)_library.csv", "\$2"),
                 	it
         		]}
         	.set{ POOL }
