@@ -159,14 +159,14 @@ workflow {
         	.set{ POOL }
 
 
-	Channel
-        	.fromPath(Paths.get(params.designsMLE, "design_*.txt"))
-        	.map{[
-                	'Brie',
-                	it.toString().replaceAll("(.*)/design_mats/design_(.*).txt", "\$2"),
-                	it
-        		]}
-        	.set{ Design }
+//	Channel
+//        	.fromPath(Paths.get(params.designsMLE, "design_*.txt"))
+//        	.map{[
+//                	'Brie',
+//                	it.toString().replaceAll("(.*)/design_mats/design_(.*).txt", "\$2"),
+//                	it
+//        		]}
+//        	.set{ Design }
         
 	////////////////////////////////////////////////////////////////////////////
 	merge_fastq(SAMPLES)
@@ -175,18 +175,22 @@ workflow {
 	reformat_pool(POOL)
         unzip
 		.out
-		.map{ [ "Brie" , it[0]["Sample_name"] , it[1] ] }
+		.map{ [ it[0]["Sample_name"] , it[1] ] }
+		.combine(POOL)
+		.map{ [ it[2], it[0], it[1] ] }
 		.groupTuple()
 		.set{ FASTQ }
+
 
        	reformat_pool
 		.out
 		.library
-		.join(FASTQ)
+		.combine( FASTQ , by: 0 )
 		.set{ TO_COUNTS }
 	
 	mageck_count_fastq(TO_COUNTS)
-
+}
+//
 //        reformat_pool
 //		.out
 //		.control
@@ -215,4 +219,4 @@ workflow {
 //	
 //	mageck_test(count_fastq.out.counts)
 //	mageck_mle(MLE_INPUT_2)	
-}
+//}
