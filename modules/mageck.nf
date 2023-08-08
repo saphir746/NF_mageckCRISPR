@@ -7,7 +7,7 @@ process mageck_count_fastq {
 
         executor "slurm"
         cpus 2
-        time "1h"
+        time "2h"
         memory "5G"
 
         container "docker://davidliwei/mageck:latest"
@@ -88,7 +88,7 @@ process mageck_mle {
                 overwrite: publish_overwrite
 
         input:
-                tuple val(pool), val(postfix), path(design), path(control), path(counts)
+                tuple val(postfix), path(design), path(control), path(counts)
 
         output:
                 path("${postfix}.gene_summary.txt"), emit: gene_summary

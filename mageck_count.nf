@@ -143,11 +143,11 @@ workflow {
 	Channel
         	.fromPath(params.Samplesheet)
         	.splitCsv(header: true)
-        	.map{
-                it << [
-                        "fastqs": sprintf("%s %s",
-                                it["fastq_1"], it["fastq_2"])
-                	]}
+//        	.map{
+//                it << [
+//                        "fastqs": sprintf("%s %s",
+//                                it["fastq_1"], it["fastq_2"])
+//                	]}
         	.set{ SAMPLES }
 
 	Channel
