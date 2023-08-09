@@ -30,7 +30,7 @@ process merge_fastq {
                 val DATA
 
         output:
-                tuple val(DATA), path("${Sample_name}.fastq.gz")
+                tuple val(DATA), path("${sample_name}.fastq.gz")
 
         script:
                 fastQ=DATA["fastqs"]
@@ -54,7 +54,7 @@ process unzip {
                 tuple val(DATA), path(fastQgz)
 
         output:
-                tuple val(DATA), path("${Sample_name}.fastq")
+                tuple val(DATA), path("${sample_name}.fastq")
 
         script:
                 sample_name=DATA['Sample_ID']

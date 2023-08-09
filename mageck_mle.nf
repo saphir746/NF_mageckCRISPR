@@ -37,17 +37,13 @@ workflow {
 	Channel
 	        .fromPath(Paths.get(params.Designs,"*.txt"))
 	        .map{[
-	                it.toString().replaceAll("(.*)/design_(.*).txt", "\$2"),
+	                it.toString().replaceAll("(.*)/([a-zA-Z0-9_]+).txt", "\$2"),
 	                it
 	        ]}
 	        .set{ Design }
 
 	Channel
 	        .fromPath(Paths.get(params.Pool,"*_control.txt"))
-//	        .map{[
-//	                it.toString().replaceAll("(.*)/Brie_(.*).txt", "\$2"),
-//	                it             
-//	        ]}
 	        .set{ reformat_pool }
     
 	Channel
@@ -62,10 +58,7 @@ workflow {
 	Design
 	      .combine( MLE_INPUT )
 	      .set{ MLE_INPUT_2 }
-	MLE_INPUT_2.view()	  
-//	MLE_INPUT_2.flatMap{ listSpread(it) }
-//	    .set{ MLE_INPUT_3 }
-	      
+//	MLE_INPUT_2.view()
 	mageck_mle(MLE_INPUT_2)
 }
 

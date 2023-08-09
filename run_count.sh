@@ -3,7 +3,8 @@
 module load Nextflow/20.12.0-edge
 module load Singularity/3.6.4
 
-WORK_DIR=/flask/scratch/babs/schneid/PM22319_CRISPR/
+WORK_DIR=work/
+#/flask/scratch/babs/schneid/PM22319_CRISPR/
 PROJECT_dir=/nemo/stp/babs/working/schneid/projects/vousdenk/julia.weber/CRISPR_screen_for_metabolic_modulators_of_cellular_response_to_serine_glycine_starvation-jw392/
 POOOOLPATH=${PROJECT_dir}"input/sgRNA_lib"
 
